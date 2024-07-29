@@ -96,19 +96,6 @@ object NewPullRequestData {
 
     s"""|$updatesText
         |
-        |## Usage
-        |✅ **Please merge!**
-        |
-        |I'll automatically update this PR to resolve conflicts as long as you don't change it yourself.
-        |
-        |${skipVersionMessage}If you have any feedback, just mention me in the comments below.
-        |
-        |Configure Scala Steward for your repository with a [`${RepoConfigAlg.repoConfigBasename}`](${org.scalasteward.core.BuildInfo.gitHubUrl}/blob/${org.scalasteward.core.BuildInfo.gitHeadCommit}/docs/repo-specific-configuration.md) file.
-        |
-        |_Have a fantastic day writing Scala!_
-        |
-        |${details.map(_.toHtml).mkString("\n")}
-        |
         |<sup>
         |${labels.mkString("labels: ", ", ", "")}
         |</sup>
