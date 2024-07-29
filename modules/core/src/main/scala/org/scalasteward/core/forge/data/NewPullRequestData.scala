@@ -28,6 +28,7 @@ import org.scalasteward.core.repoconfig.{GroupRepoConfig, RepoConfigAlg}
 import org.scalasteward.core.util.{Details, Nel}
 
 import scala.util.matching.Regex
+import scala.annotation.nowarn
 
 final case class NewPullRequestData(
     title: String,
@@ -43,23 +44,13 @@ final case class NewPullRequestData(
 object NewPullRequestData {
   def bodyFor(
       update: Update,
-      edits: List[EditAttempt],
+      @nowarn edits: List[EditAttempt],
       artifactIdToUrl: Map[String, Uri],
       artifactIdToUpdateInfoUrls: Map[String, List[UpdateInfoUrl]],
-      filesWithOldVersion: List[String],
-      configParsingError: Option[String],
+      @nowarn filesWithOldVersion: List[String],
+      @nowarn configParsingError: Option[String],
       labels: List[String]
   ): String = {
-    val migrations = edits.collect { case scalafixEdit: ScalafixEdit => scalafixEdit }
-    val appliedMigrations = migrationNote(migrations)
-    val oldVersionDetails = oldVersionNote(filesWithOldVersion, update)
-    val details = List(
-      appliedMigrations,
-      oldVersionDetails,
-      adjustFutureUpdates(update).some,
-      configParsingError.map(configParsingErrorDetails)
-    ).flatten
-
     val updatesText = update.on(
       update = u => {
         val artifacts = artifactsWithOptionalUrl(u, artifactIdToUrl)
@@ -87,11 +78,6 @@ object NewPullRequestData {
             |Updates:
             |$artifacts""".stripMargin.trim
       }
-    )
-
-    val skipVersionMessage = update.on(
-      _ => "If you'd like to skip this version, you can just close this PR. ",
-      _ => ""
     )
 
     s"""|$updatesText
